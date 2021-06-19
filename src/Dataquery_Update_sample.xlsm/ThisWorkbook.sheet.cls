@@ -4,7 +4,7 @@ Public Sub updateStatus()
 
 Dim I As Byte
 Dim rngRules As Range, rngRow As Range
-Dim objConnection As ADODB.Connection
+Dim objConnection As Object
 Dim sSQL As String, sWhere As String, sStatus As String
 Dim sRuleColumn As String, sRuleValue As String
 Dim bScreenUpdating As Boolean
@@ -12,6 +12,14 @@ Dim bScreenUpdating As Boolean
     ' Don't refresh the screen every time
     bScreenUpdating = Application.ScreenUpdating
     Application.ScreenUpdating = False
+    
+    ' Use late binding to reduce configuration problems on some computers
+    Set objConnection = CreateObject("ADODB.Connection")
+    If (objConnection Is Nothing) Then
+        MsgBox "Sorry, it seems you don't have ADODB.Connection on your computer." & vbCrLf & vbCrLf & _
+            "The macro present in this workbook requires that DLL to be able to do his job", vbExclamation + vbOKOnly
+        Exit Sub
+    End If
     
     shData.Activate
     
